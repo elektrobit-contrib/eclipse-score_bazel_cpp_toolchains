@@ -55,6 +55,11 @@ filegroup(
     srcs = ["usr/bin/lisa-elf-enabler"],
 )
 
+filegroup(
+    name = "ld_library_paths",
+    srcs = ["usr/lib/x86_64-linux-gnu"],
+)
+
 # The sysroot for EBcLfSA is the entire extracted directory
 filegroup(
     name = "sysroot_dir",
