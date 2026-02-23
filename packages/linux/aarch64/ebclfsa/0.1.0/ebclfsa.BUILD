@@ -57,7 +57,7 @@ filegroup(
 
 filegroup(
     name = "ld_library_paths",
-    srcs = ["usr/lib/x86_64-linux-gnu"],
+    srcs = ["usr/lib/x86_64-linux-gnu", "lib/x86_64-linux-gnu"],
 )
 
 # The sysroot for EBcLfSA is the entire extracted directory
