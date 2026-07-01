@@ -192,6 +192,9 @@ VERSION_MATRIX = {
         "strip_prefix": "fastdev-sdk-ubuntu-ebclfsa-ebcl-qemuarm64",
         "sha256": "f44286c28d831dc40acdac08ef49f38a2e9cbb057bea38c25834964693785287",
         "url": "https://github.com/Elektrobit/eb_corbos_toolkit/releases/download/v2.0.0-beta1/fastdev-sdk-ubuntu-ebclfsa-ebcl-qemuarm64.tar.gz",
+        "patch_cmds": [
+            "./relocate-sdk.sh",
+        ],
     },
     "x86_64-qnx-sdp_8.0.0": {
         "build_file": "@score_bazel_cpp_toolchains//packages/qnx/x86_64/sdp/8.0.0:sdp.BUILD",
