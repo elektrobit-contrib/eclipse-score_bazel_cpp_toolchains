@@ -88,6 +88,14 @@ cc_test(
     tags = ["manual"],
 )
 
+# no_pie -> "-no-pie" for compiler and linker actions.
+cc_test(
+    name = "no_pie_test",
+    srcs = ["opt_in_smoke.cpp"],
+    features = ["no_pie"],
+    tags = ["manual"],
+)
+
 # strip_debug_symbols -> "-Wl,-S". Emitted when debug-symbol stripping is
 # requested for the link output.
 cc_test(
@@ -120,6 +128,7 @@ test_suite(
         ":force_pic_flags_test",
         ":includes_test",
         ":linkstamps_test",
+        ":no_pie_test",
         ":per_object_debug_info_test",
         ":static_libgcc_test",
         ":strip_debug_symbols_test",

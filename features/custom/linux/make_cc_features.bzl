@@ -25,6 +25,7 @@ _LINUX_FEATURES = [
     (":extra_c_compile_flags", True),  # per-instance, see templates/BUILD.template
     (":extra_cxx_compile_flags", True),  # per-instance, see templates/BUILD.template
     ("@score_bazel_cpp_toolchains//features/native/user_compile_flags", True),
+    ("@score_bazel_cpp_toolchains//features/native/no_pie", False),  # opt-in
     ("@score_bazel_cpp_toolchains//features/native/compiler_input_flags", True),
     ("@score_bazel_cpp_toolchains//features/native/compiler_output_flags", True),
     ("@score_bazel_cpp_toolchains//features/native/dependency_file", True),

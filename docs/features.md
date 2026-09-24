@@ -80,6 +80,8 @@ the relevant build mode is active. All are enabled by default except where noted
 - **`fission_support`** — `-Wl,--gdb-index` under `--fission`.
 - **`linkstamps`** — Passes `%{linkstamp_paths}` to the linker (`--stamp`).
 - **`force_pic_flags`** — `-pie` for executables under `--force_pic`.
+- **`no_pie`** — `-no-pie` for compiler and linker actions. **Opt-in
+  (disabled by default).**
 - **`strip_debug_symbols`** — `-Wl,-S` when the link output is stripped
   (e.g. `fastbuild`/`opt`, not `dbg`).
 - **`static_libgcc`** — `-static-libgcc` when `static_link_cpp_runtimes` is on.

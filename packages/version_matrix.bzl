@@ -157,6 +157,7 @@ VERSION_MATRIX = {
             "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
             "-L",
             "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         "extra_cxx_compile_flags": [
@@ -178,6 +179,7 @@ VERSION_MATRIX = {
             "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
             "-L",
             "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         "extra_link_flags": [
@@ -222,6 +224,7 @@ VERSION_MATRIX = {
             "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
             "-L",
             "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         "extra_cxx_compile_flags": [
@@ -245,6 +248,7 @@ VERSION_MATRIX = {
             "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
             "-L",
             "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         "extra_link_flags": [
