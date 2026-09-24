@@ -195,6 +195,7 @@ VERSION_MATRIX = {
             "-static-libstdc++",
             "-static-libgcc",
             "-static",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         "compiler_library_search_paths": [
@@ -261,6 +262,7 @@ VERSION_MATRIX = {
             "-static-libstdc++",
             "-static-libgcc",
             "-static",
+            "-no-pie",
             "--no-canonical-prefixes",
         ],
         # No `compiler_library_search_paths` on purpose: the SDK host binaries already
