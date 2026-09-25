@@ -46,7 +46,7 @@ filegroup(
 
 filegroup(
     name = "cc",
-    srcs = ["usr/bin/aarch64-linux-gnu-gcc-14"],
+    srcs = ["usr/lib/llvm-20/bin/clang"],
 )
 
 filegroup(
@@ -56,7 +56,7 @@ filegroup(
 
 filegroup(
     name = "cxx",
-    srcs = ["usr/bin/aarch64-linux-gnu-g++-14"],
+    srcs = ["usr/lib/llvm-20/bin/clang++"],
 )
 
 filegroup(

@@ -75,8 +75,13 @@ cc_test(
 # Verifies: concepts, span, designated initializers, spaceship operator,
 #           ranges and views, default member initializers, requires clause,
 #           consteval
+# Skipped on EBcLfSA 2.0.0-beta2: its libc++ has no exception support and the test uses try/catch.
 cc_test(
     name = "cpp20_test",
     srcs = ["cpp20_test.cpp"],
     copts = ["-std=c++20"],
+    target_compatible_with = select({
+        "@score_bazel_platforms//version:sdk_2.0.0-beta2": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
 )

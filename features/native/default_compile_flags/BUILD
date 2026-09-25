@@ -28,9 +28,7 @@ cc_args(
                 "-fno-omit-frame-pointer",
                 "-ffunction-sections",
                 "-fdata-sections",
-                "-fno-canonical-system-headers",
                 "-no-canonical-prefixes",
-                "-z noexecstack",
             ],
             "@platforms//os:qnx": [
                 "-fno-canonical-system-headers",
@@ -38,6 +36,28 @@ cc_args(
             "//conditions:default": [],
         },
     ),
+)
+
+# The EBcLfSA 2.0.0-beta2 toolchain is clang, which rejects these GCC-only flags.
+config_setting(
+    name = "linux_clang_ebclfsa",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@score_bazel_platforms//version:sdk_2.0.0-beta2",
+    ],
+)
+
+cc_args(
+    name = "linux_gcc_only_compile_flags_args",
+    actions = ["@rules_cc//cc/toolchains/actions:compile_actions"],
+    args = select({
+        ":linux_clang_ebclfsa": [],
+        "@platforms//os:linux": [
+            "-fno-canonical-system-headers",
+            "-z noexecstack",
+        ],
+        "//conditions:default": [],
+    }),
 )
 
 # x86_64 requires -m64; other architectures need no CPU flags here
@@ -149,6 +169,7 @@ cc_feature(
     name = "default_compile_flags",
     args = [
         ":default_compile_flags_args",
+        ":linux_gcc_only_compile_flags_args",
         ":target_cpu_flags_args",
         ":c_std_c11_args",
         ":c_std_gnu11_args",

@@ -117,12 +117,16 @@ cc_test(
 # The runtime check reads /proc/self/maps, which is Linux-specific and not
 # available on QNX, so the test is also skipped on QNX. The -static link flag
 # itself is still exercised by the build on QNX.
+#
+# The EBcLfSA 2.0.0-beta2 libc++ is built without filesystem support, so it has
+# no std::ifstream and the test is skipped there too.
 cc_test(
     name = "fully_static_link_test",
     srcs = ["fully_static_link_test.cpp"],
     features = ["fully_static_link"],
     target_compatible_with = select({
         "@score_bazel_platforms//runtime_es:autosd10": ["@platforms//:incompatible"],
+        "@score_bazel_platforms//version:sdk_2.0.0-beta2": ["@platforms//:incompatible"],
         "@platforms//os:qnx": ["@platforms//:incompatible"],
         "//conditions:default": [],
     }),

@@ -211,95 +211,59 @@ VERSION_MATRIX = {
     "aarch64-linux-sdk_2.0.0-beta2-ebclfsa": {
         "build_file": "@score_bazel_cpp_toolchains//packages/linux/aarch64/ebclfsa/2.0.0-beta2:ebclfsa.BUILD",
         "extra_c_compile_flags": [
+            "--target=aarch64-linux-gnu",
             "-nostdinc",
             "-isystem",
-            "external/%{toolchain_pkg}%/usr/lib/gcc-cross/aarch64-linux-gnu/14/include",
+            "external/%{toolchain_pkg}%/usr/lib/llvm-20/lib/clang/20/include",
             "-isystem",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/include",
-            "-isystem",
-            "external/%{toolchain_pkg}%/usr/include/aarch64-linux-gnu",
-            "-L",
-            "external/%{toolchain_pkg}%/lib/aarch64-linux-gnu",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
-            "-no-pie",
-            "--no-canonical-prefixes",
+            "external/%{toolchain_pkg}%/opt/lisa-libc/include",
         ],
+        # The SDK's libc++/libc++abi are built without exception and RTTI support.
         "extra_cxx_compile_flags": [
+            "--target=aarch64-linux-gnu",
             "-nostdinc++",
             "-isystem",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/include/c++/14",
-            "-isystem",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/include/c++/14/aarch64-linux-gnu",
-            "-isystem",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/include/c++/14/backward",
+            "external/%{toolchain_pkg}%/opt/lisa-libcxx/include/c++/v1",
             "-nostdinc",
             "-isystem",
-            "external/%{toolchain_pkg}%/usr/lib/gcc-cross/aarch64-linux-gnu/14/include",
+            "external/%{toolchain_pkg}%/usr/lib/llvm-20/lib/clang/20/include",
             "-isystem",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/include",
-            "-isystem",
-            "external/%{toolchain_pkg}%/usr/include/aarch64-linux-gnu",
-            "-L",
-            "external/%{toolchain_pkg}%/lib/aarch64-linux-gnu",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
-            "-no-pie",
-            "--no-canonical-prefixes",
+            "external/%{toolchain_pkg}%/opt/lisa-libc/include",
+            "-fno-exceptions",
+            "-fno-rtti",
         ],
+        # -static: without it lld requests the glibc loader, which does not exist for musl.
         "extra_link_flags": [
-            "-B",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/bin",
-            "-L",
-            "external/%{toolchain_pkg}%/lib/aarch64-linux-gnu",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/aarch64-linux-gnu/lib",
-            "-L",
-            "external/%{toolchain_pkg}%/usr/lib/x86_64-linux-gnu",
-            "-lm",
-            "-ldl",
-            "-lrt",
-            "-static-libstdc++",
-            "-static-libgcc",
+            "--target=aarch64-linux-gnu",
+            "-fuse-ld=lld",
+            "--ld-path=external/%{toolchain_pkg}%/usr/lib/llvm-20/bin/ld.lld",
+            "-nostdlib",
             "-static",
-            "-no-pie",
-            "--no-canonical-prefixes",
+            "-L",
+            "external/%{toolchain_pkg}%/opt/lisa-libc/lib/aarch64-linux-gnu",
+            "-L",
+            "external/%{toolchain_pkg}%/opt/lisa-libcxx/lib",
+            "external/%{toolchain_pkg}%/opt/lisa-libcxx/lib/libc++.a",
+            "external/%{toolchain_pkg}%/opt/lisa-libcxx/lib/libc++abi.a",
+            "external/%{toolchain_pkg}%/usr/lib/llvm-20/lib/clang/20/lib/linux/libclang_rt.builtins-aarch64.a",
+            "external/%{toolchain_pkg}%/opt/lisa-libc/lib/aarch64-linux-gnu/crt1.o",
+            "external/%{toolchain_pkg}%/opt/lisa-libc/lib/aarch64-linux-gnu/libc.a",
         ],
-        # No `compiler_library_search_paths` on purpose: the SDK host binaries already
-        # carry an $ORIGIN rpath to their own libraries, and exporting the SDK's
-        # glibc 2.41 via LD_LIBRARY_PATH would also be inherited by Bazel's own
-        # process-wrapper, which is linked against the (older) host glibc.
-        "strip_prefix": "fastdev-sdk-trixie-ebclfsa-ebcl-qemuarm64",
-        "sha256": "4cf7f0191988795f316f276b56e370ad60fc371954a881d158ebba0284d9d3f5",
-        "url": "https://github.com/Elektrobit/eb_corbos_toolkit/releases/download/v2.0.0-beta2/fastdev-sdk-trixie-ebclfsa-ebcl-qemuarm64.tar.gz",
-        # The SDK host binaries carry an $ORIGIN rpath into the SDK's own glibc 2.41
-        # but still request the host loader (/lib64/ld-linux-x86-64.so.2). Running a
-        # newer libc under an older ld.so aborts with "stack smashing detected", so
-        # repoint the interpreter at the SDK loader (what relocate-sdk.sh does).
-        # Rewrites the ELF interpreter of every host executable shipped by an EB corbos
-        # SDK to the loader bundled with that SDK. This is the same operation the SDK's
-        # own `relocate-sdk.sh` performs; it is inlined here because neither `patchelf`
-        # nor `file` can be assumed to exist on the host, and the SDK-provided `patchelf`
-        # cannot start before the interpreter is fixed (hence the explicit loader call).
-        # Each entry of `patch_cmds` is passed to a separate `bash -c`, so this has to
-        # stay a single command.
+        # No `compiler_library_search_paths`: LD_LIBRARY_PATH would also push the SDK glibc into Bazel's process-wrapper.
+        "strip_prefix": "fastdev-sdk-trixie-ebclfsa-rpi4b",
+        "sha256": "7f9b4ec111056480de14da4f11f54f13edff9d868f4f4d60d0331483c9bfa2bf",
+        "url": "https://github.com/opajonk/eb_corbos_toolkit/releases/download/test-tag/fastdev-sdk-trixie-ebclfsa-rpi4b.tar.gz",
+        # relocate-sdk.sh points the SDK host tools at the SDK's own loader and glibc.
+        # It calls `file` only to spot ELF binaries; the host may lack `file`, and the
+        # SDK's copy crashes once the script exposes the SDK glibc, so use a stand-in.
         "patch_cmds": [
-            "sdk=$(pwd); " +
-            "loader=$sdk/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2; " +
-            "test -x \"$loader\" -a -x \"$sdk/usr/bin/patchelf\" || exit 1; " +
-            # patchelf lives inside the tree that is about to be rewritten, so work on a copy.
-            "tmp=$(mktemp -d); cp \"$sdk/usr/bin/patchelf\" \"$tmp/patchelf\"; " +
-            "run_patchelf() { \"$loader\" --library-path \"$sdk/usr/lib/x86_64-linux-gnu:$sdk/lib/x86_64-linux-gnu\" \"$tmp/patchelf\" \"$@\"; }; " +
-            "for binary in $(find usr/bin usr/sbin usr/libexec/gcc* usr/lib/gcc-cross usr/lib/llvm-*/bin -type f -perm -u+x 2>/dev/null); do " +
-            "interpreter=$(run_patchelf --print-interpreter \"$binary\" 2>/dev/null) || continue; " +
-            "test -n \"$interpreter\" || continue; " +
-            "run_patchelf --set-interpreter \"$loader\" \"$binary\" >/dev/null 2>&1 || true; " +
-            "done; " +
-            "rm -rf \"$tmp\"",
+            "shim=$(mktemp -d) && " +
+            "printf '%s\\n' '#!/bin/sh' 'for f; do if [ \"$(head -c 4 \"$f\" 2>/dev/null | tail -c 3)\" = ELF ]; then echo \"$f: ELF\"; else echo \"$f: data\"; fi; done' > \"$shim/file\" && " +
+            "chmod +x \"$shim/file\" && " +
+            "PATH=\"$shim:$PATH\" sh ./relocate-sdk.sh && " +
+            "rm -rf \"$shim\"",
+            # libLLVM's RUNPATH lacks $ORIGIN, so its libz3.so.4 dependency next to it is not found.
+            "usr/bin/patchelf --set-rpath '$ORIGIN:$ORIGIN/../lib' usr/lib/x86_64-linux-gnu/libLLVM.so.20.1",
         ],
     },
     "x86_64-qnx-sdp_8.0.0": {
